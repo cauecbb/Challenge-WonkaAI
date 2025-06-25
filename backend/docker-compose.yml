@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  postgres:
+    build: .
+    container_name: meetwonka-postgres
+    environment:
+      # ⚠️ IMPORTANT: Replace with your personalized database name
+      # Format: meetwonka_{your_first_name}_{your_last_name}
+      # Example: meetwonka_john_smith
+      POSTGRES_DB: meetwonka_caue_bruno
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:

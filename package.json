@@ -1,0 +1,12 @@
+{
+  "name": "azure-api-test",
+  "version": "1.0.0",
+  "description": "Quick test script for Azure API endpoints",
+  "main": "azure_api_test.js",
+  "scripts": {
+    "test": "node azure_api_test.js"
+  },
+  "dependencies": {
+    "axios": "^1.9.0"
+  }
+} 
