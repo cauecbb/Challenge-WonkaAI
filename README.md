@@ -1,105 +1,166 @@
-# Invoice Processing Assignment
+# Invoice Processing Backend
 
-**Note:** This assignment was created based on a real-life project at Wonka.AI. The invoices used are dummy/fake.
+This project implements the **backend** for an invoice processing system. It performs OCR extraction from scanned invoices (PDF/images), parses and stores the extracted data in a PostgreSQL database, and exposes REST API endpoints for integration with a prebuilt React frontend.
 
-## 🚨 IMPORTANT DATABASE SETUP REQUIREMENT 🚨
+> **Note:** The frontend (in `/invoice-processing/`) was already mostly ready. This backend was built to integrate seamlessly with it and provide all necessary API and database functionality.
 
-**MANDATORY**: Before starting, you MUST personalize your database name in the `docker-compose.yml` file.
+---
 
-Replace `POSTGRES_DB: meetwonka_db` with `POSTGRES_DB: meetwonka_{your_first_name}_{your_last_name}`
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
+- [Database Setup](#database-setup)
+- [Running the Backend](#running-the-backend)
+- [Running the Frontend](#running-the-frontend)
+- [Main Endpoints](#main-endpoints)
+- [Dependencies](#dependencies)
+- [Notes & Troubleshooting](#notes--troubleshooting)
+- [Contact](#contact)
 
-**Example**: If your name is John Smith, use `POSTGRES_DB: meetwonka_john_smith`
+---
 
-⚠️ **This is a critical requirement and your submission will not be accepted without this personalization.**
+## Project Overview
+- **Backend:** FastAPI app for OCR extraction, data parsing, and database storage.
+- **Frontend:** React app (already provided) for user interaction and visualization.
+- **Database:** PostgreSQL running locally via Docker Compose.
 
-## Assignment Overview
+The backend receives invoice files, extracts and parses their data, saves them in the database, and exposes endpoints for the frontend to consume.
 
-You are a consultant at Superstore, which is an IT wholesaler selling IT products on the market to clients. The issue is that, at the moment, all invoices are paper-based and stored in their hangar.
+---
 
-With the AI boom and its ability to read text from images, Superstore came to us (Wonka.AI) to create a solution that would permit them to have all their archives scanned and grouped in an app. All invoices have already been scanned and can be found in the folder `/backend/data/scanned-invoices`.
+## Prerequisites
+- **Python 3.9+**
+- **Node.js 18+** (for the frontend)
+- **Docker** (for the database)
+- **Tesseract OCR** installed on your system ([Download here](https://github.com/tesseract-ocr/tesseract))
+- **pip** (Python package manager)
 
-Because they are so nice, and the boss is trying to learn React.JS, you already have a working frontend at hand! Unfortunately, vibe coding has its cons, so there may be errors in the code, sorry about that!
+---
 
-## What's Already Provided
+## Project Structure
+```
+/
+├── backend/                # FastAPI backend, OCR, database integration
+│   ├── main.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── crud.py
+│   ├── database.py
+│   ├── requirements.txt
+│   ├── docker-compose.yml
+│   └── ...
+├── invoice-processing/     # React frontend (already provided)
+│   ├── package.json
+│   ├── src/
+│   └── ...
+└── ...
+```
 
-- **Frontend Application**: A React.JS application located in `/invoice-processing/`
-- **Database Setup**: PostgreSQL database with pre-configured tables (see `/backend/README.md` for schema details)
-- **Scanned Invoices**: Sample invoices in `/backend/data/scanned-invoices/`
-- **Docker Configuration**: Database setup via Docker Compose in `/backend/`
+---
 
-### Resources
+## Database Setup
 
-Here are some resources you can use. It is not mandatory to use them.
+1. **Edit `backend/docker-compose.yml`**
+   - Change the database name to your own, e.g.:
+     ```yaml
+     POSTGRES_DB: meetwonka_your_firstname_your_lastname
+     ```
 
-Azure Cognitive Search :
-- Endpoint: https://djiby-service.search.windows.net
-- key : Nv9zY536IMexMTlQIR9cLI9zP4YGrMMQMYpUOJrD86AzSeDZcUOy
+2. **Start the database:**
+   ```sh
+   cd backend
+   docker-compose up -d
+   ```
+   The database will be available at `localhost:5435`.
 
-Azure Document intelligence :
-- Endpoint: https://di-documentsinsertion-dev-westeu-01.cognitiveservices.azure.com/
-- Key : 7rm7jkKluSvypX5NNj5cKQPuJgiltf18zStQQu0zJJJ4OGK6BodxJQQJ99BCACYeBjFXJ3w3AAALACOGULv1
+3. **Database credentials:**
+   - **Host:** `localhost`
+   - **Port:** `5435`
+   - **User:** `postgres`
+   - **Password:** `password`
+   - **Database:** `meetwonka_your_firstname_your_lastname`
 
-OpenAI :
-- Endpoint: https://djiby.services.ai.azure.com/
-- Key : ffdf90c0863343379a82126d5d6d1992
-- Model : gpt-4.1
-- Model name : gpt-4.1
+---
 
-The keys will be depecrated as soon as you are done with the assignment.
+## Running the Backend
 
-## Your Role & Deliverables
-
-Your role in this project is to create the **backend of the application**. You must:
-
-1. Be able to store invoices in the provided PostgreSQL database
-2. Create API endpoints that the frontend can consume
-3. Handle invoice data extraction and checking
-4. Implement proper validation for all incoming data
-
-## Getting Started
-
-1. **Set up the database**:
-   
-   **FIRST**: Edit `backend/docker-compose.yml` and replace the database name:
-   ```yaml
-   POSTGRES_DB: meetwonka_{your_first_name}_{your_last_name}
+1. **Install dependencies:**
+   ```sh
+   cd backend
+   pip install -r requirements.txt
    ```
 
-2. **Launch and analyze the frontend**:
-   - Review `/invoice-processing/src/` to understand expected API contracts
-   - Look at the service files to see what endpoints are expected
+2. **Ensure Tesseract is installed and available in your PATH.**
+   - [Tesseract download](https://github.com/tesseract-ocr/tesseract)
 
-## Time Constraints & Expectations
+3. **Run the backend:**
+   ```sh
+   uvicorn main:app --reload
+   ```
+   The backend will be available at `http://localhost:8000`.
 
-**Time Limit**: 4 hours to create the backend
+---
 
-**However**, if you finish earlier, it's all to your advantage to add features that you feel are necessary for the end result of this app.
+## Running the Frontend
 
-## Important Notes
+1. **Install dependencies:**
+   ```sh
+   cd invoice-processing
+   npm install
+   ```
 
-### AI Usage Policy
-It's 2025, you are allowed to freely use AI to work on this project. In fact, we even advise you to use it! It's like a new IDE that makes you work faster, unless you are not able to keep control of this tool. On the other hand, it is on our side to be able to evaluate you in other ways than just "Oh, the code works, good job!". Hence, we must tell you in advance that we will grade you on the code quality.
+2. **Run the frontend:**
+   ```sh
+   npm run dev
+   ```
+   The frontend will be available at `http://localhost:5173`.
 
-**Remember**: While AI is all fun and games, you must keep in mind that it is never 100%. Fact-checking its results is a necessity in all production environments!
+---
 
-### Flexibility
-You are free to modify the frontend and the database if you feel like there is a better way to implement it. Just document your changes and reasoning.
+## Main Endpoints
 
-## Submission Guidelines
+- **POST `/extract-invoice`**
+  - Upload a PDF/image invoice. The backend extracts, parses, saves, and returns the full invoice object.
+- **GET `/invoices`**
+  - Returns all invoices saved in the database, in the format expected by the frontend.
+- **Swagger/OpenAPI docs:**
+  - Available at [http://localhost:8000/docs](http://localhost:8000/docs)
 
-1. **Code**: Complete backend implementation
-2. **Documentation**: 
-   - API documentation (Swagger/OpenAPI preferred)
-   - Setup instructions in `/backend/README.md`
-   - Any architectural decisions or changes made
-3. **Demo**: Be prepared to demonstrate your solution
+---
 
-## Message from Your Project Manager
+## Dependencies
 
-I present myself, my name is Willy (Wonka), I'm your Project Manager on this project. Unfortunately, I have no time to work on this, I have 1000 chocolate bars to wrap for Flanders AI... Here is a speech before you start on this project:
+### Backend
+- fastapi
+- uvicorn
+- pytesseract
+- opencv-python
+- pillow
+- python-multipart
+- SQLAlchemy
+- psycopg2 (via SQLAlchemy/Postgres)
+- Docker (for database)
 
-The points above are your technical requirements, but remember: this is as much about demonstrating your problem-solving approach and code quality as it is about getting things working. Show us how you think, how you structure your code, and how you would approach this in a real production environment.
+### Frontend (see `invoice-processing/package.json`)
+- React
+- Chakra UI
+- Vite
+- Axios
+- ...and more (see package.json)
 
-Good luck, and remember our company motto:
+---
 
-**Work less, vibe more!**
+## Notes & Troubleshooting
+- The backend is designed to work out-of-the-box with the provided frontend.
+- The OCR and regex logic is robust, but may need fine-tuning for new invoice layouts or poor scan quality.
+- If you get a database connection error, check if Docker is running and the port matches your config.
+- If you get a Tesseract error, ensure it is installed and available in your system PATH.
+- Swagger docs are available at `/docs` for easy API testing.
+- You can use DBeaver, pgAdmin, or psql to inspect the database.
+
+---
+
+## Contact
+For questions or issues, open an issue in the repository or contact me.
+contato.cauecbb@gmail.com
