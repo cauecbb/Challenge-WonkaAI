@@ -266,3 +266,8 @@ def invoice_to_schema(invoice):
         terms=invoice.terms,
         orderId=invoice.order_id
     )
+
+@app.get("/invoices")
+def list_invoices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    invoices = crud.get_invoices(db=db, skip=skip, limit=limit)
+    return [invoice_to_schema(inv).dict() for inv in invoices]
