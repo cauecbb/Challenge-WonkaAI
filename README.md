@@ -161,6 +161,6 @@ The backend receives invoice files, extracts and parses their data, saves them i
 
 ---
 
-## Contact
-For questions or issues, open an issue in the repository or contact me.
-contato.cauecbb@gmail.com
+## License
+
+This project was developed as part of a technical test.
